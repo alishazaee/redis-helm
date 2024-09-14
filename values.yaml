@@ -1,0 +1,18 @@
+# Redis configuration values
+replica:
+  replicas: 1
+
+service:
+  name: redis
+  type: ClusterIP
+  port: 6379
+  targetPort: 6379
+
+resources:
+  maxmem: 500m
+
+port: 6379
+
+image: 
+  name: bitnami/redis
+  version: latest

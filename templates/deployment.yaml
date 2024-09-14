@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis.fullname" . }}
+  labels:
+    app: {{ include "redis.name" . }}
+spec:
+  replicas: {{ .Values.replica.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "redis.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "redis.name" . }}
+    spec:
+      containers:
+      - name: redis
+        image: {{ .Values.image.name }}:{{ .Values.image.version }}
+        ports:
+        - containerPort: {{ .Values.port }}
+          name: redis
+      resources:
+        limits:
+          memory: {{  .Values.resources.maxmem }}
+      livenessProbe:
+        tcpSocket:
+          port: redis
+      readinessProbe:
+        tcpSocket:
+          port: redis
+
