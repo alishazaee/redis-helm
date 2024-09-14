@@ -9,10 +9,18 @@ service:
   targetPort: 6379
 
 resources:
-  maxmem: 500m
+  maxmem: 500M
 
 port: 6379
 
 image: 
   name: redis
   version: latest
+
+affinity:
+  node: "kind-control-plane"  
+
+persistence:
+  enabled: true
+  storageClass: "local-storage"
+  size: 800M

@@ -8,6 +8,6 @@ spec:
   type: ClusterIP
   ports:
   - port: {{ .Values.service.port }}
-    targetPort: redis
+    targetPort: {{ .Values.service.port }}
   selector:
     app: {{ include "redis.name" . }}

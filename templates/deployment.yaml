@@ -15,18 +15,41 @@ spec:
         app: {{ include "redis.name" . }}
     spec:
       containers:
-      - name: redis
-        image: {{ .Values.image.name }}:{{ .Values.image.version }}
-        ports:
-        - containerPort: {{ .Values.port }}
-          name: redis        
-      resources:
-        limits:
-          memory: {{  .Values.resources.maxmem }}
-      livenessProbe:
-        tcpSocket:
-          port: redis
-      readinessProbe:
-        tcpSocket:
-          port: redis
-
+        - name: redis
+          image: {{ .Values.image.name }}:{{ .Values.image.version }}
+          ports:
+            - containerPort: {{ .Values.port }}
+              name: redis        
+          resources:
+            requests:
+              memory: {{ .Values.resources.requestMemory }}
+              cpu: {{ .Values.resources.requestCPU }}
+            limits:
+              memory: {{ .Values.resources.maxmem }}
+              cpu: {{ .Values.resources.maxCPU }}
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            tcpSocket:
+              port: redis
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            tcpSocket:
+              port: redis
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: {{ include "redis.fullname" . }}-pvc
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ .Values.affinity.node }}
