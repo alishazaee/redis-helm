@@ -14,5 +14,5 @@ resources:
 port: 6379
 
 image: 
-  name: bitnami/redis
+  name: redis
   version: latest

@@ -19,7 +19,7 @@ spec:
         image: {{ .Values.image.name }}:{{ .Values.image.version }}
         ports:
         - containerPort: {{ .Values.port }}
-          name: redis
+          name: redis        
       resources:
         limits:
           memory: {{  .Values.resources.maxmem }}
